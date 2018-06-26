@@ -18,17 +18,28 @@ class Bluetooth:
 
         self.bus = dbus.SystemBus()
         try:
-            self.manager = dbus.Interface(self.bus.get_object("org.bluez", "/"), "org.bluez.Manager")
-            adapter_path = self.manager.DefaultAdapter()
-            self.service = dbus.Interface(self.bus.get_object("org.bluez", adapter_path),"org.bluez.Service")
+#            self.manager = dbus.Interface(self.bus.get_object("org.bluez", "/"), "org.bluez.Manager")
+#            adapter_path = self.manager.DefaultAdapter()
+#            self.service = dbus.Interface(self.bus.get_object("org.bluez", adapter_path),"org.bluez.Service")
+            self.om = dbus.Interface(self.bus.get_object("org.bluez", "/"), "org.freedesktop.DBus.ObjectManager")
+            objects = self.om.GetManagedObjects()
+            for path, interfaces in objects.iteritems():
+                print("[ %s ]" % (path))
+#                print("! %s !" % (interfaces["org.bluez.Adapter1"]))
+                if path == "/org/bluez/hci0":
+                    adapter_path = path
+            print("  %s  " % (adapter_path))
+            self.service = dbus.Interface(self.bus.get_object("org.bluez", adapter_path),"org.bluez.Adapter1")
         except Exception, e:
             sys.exit("Please turn on bluetooth")
+        print("get bluetooth-D-Bus-connection")
         try:
             fh = open(sdp,"r")
         except Exception, e:
             sys.exit("Cannot open sdp_record file")
         self.service_record = fh.read()
         fh.close()
+        print("initialize done")
 
     def listen(self):
         self.service.handle = self.service.AddRecord(self.service_record)
