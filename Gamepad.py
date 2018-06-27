@@ -44,13 +44,13 @@ class Gamepad:
         i = 0
         while True:
             try:
-		self.dev = InputDevice("/dev/input/event"+str(i))
-		if "keyboard" in str(self.dev):
-                    break
+                self.dev = InputDevice("/dev/input/event"+str(i))
+                if "keyboard" in str(self.dev):
+                            break
             except Exception, e:
                 print "Keyboard not found."
                 break
-                i += 1
+            i += 1
 		print "keyboard found "+str(self.dev)
 
     def change_state(self, event):
@@ -61,7 +61,7 @@ class Gamepad:
             else:
                 self.state[2][self.mapping[evdev_code]] = 0
 
-    def event_loop(self,bt):
+    def event_loop(self, bt):
         for event in self.dev.read_loop():
             if event.type == ecodes.EV_KEY and event.value < 2:
                 self.change_state(event)

@@ -1,4 +1,4 @@
-from bluetooth import *
+from bluetooth import BluetoothSocket, L2CAP
 import dbus # Used to set up the SDP record
 class Bluetooth:
     """docstring for Gamepad"""
@@ -18,21 +18,21 @@ class Bluetooth:
 
         self.bus = dbus.SystemBus()
         try:
-#            self.manager = dbus.Interface(self.bus.get_object("org.bluez", "/"), "org.bluez.Manager")
-#            adapter_path = self.manager.DefaultAdapter()
-#            self.service = dbus.Interface(self.bus.get_object("org.bluez", adapter_path),"org.bluez.Service")
+        #    self.manager = dbus.Interface(self.bus.get_object("org.bluez", "/"), "org.bluez.Manager")
+        #    adapter_path = self.manager.DefaultAdapter()
+        #    self.service = dbus.Interface(self.bus.get_object("org.bluez", adapter_path),"org.bluez.Service")
             self.om = dbus.Interface(self.bus.get_object("org.bluez", "/"), "org.freedesktop.DBus.ObjectManager")
             objects = self.om.GetManagedObjects()
             for path, interfaces in objects.iteritems():
                 print("[ %s ]" % (path))
-#                print("! %s !" % (interfaces["org.bluez.Adapter1"]))
+            #    print("! %s !" % (interfaces["org.bluez.Adapter1"]))
                 if path == "/org/bluez/hci0":
                     adapter_path = path
             print("  %s  " % (adapter_path))
-            self.service = dbus.Interface(self.bus.get_object("org.bluez", adapter_path),"org.bluez.Adapter1")
+            self.service = dbus.Interface(self.bus.get_object("org.bluez", adapter_path), "org.bluez.Adapter1")
         except Exception, e:
             sys.exit("Please turn on bluetooth")
-        print("get bluetooth-D-Bus-connection")
+        print("get a bluetooth-D-Bus-connection")
         try:
             fh = open(sdp,"r")
         except Exception, e:
@@ -42,16 +42,16 @@ class Bluetooth:
         print("initialize done")
 
     def listen(self):
-        self.service.handle = self.service.AddRecord(self.service_record)
-        os.system("sudo hciconfig hci0 class "+self.classname)
-        os.system("sudo hciconfig hci0 name "+self.devname)
+        # self.service.handle = self.service.AddRecord(self.service_record)
+        os.system("sudo hciconfig hci0 class " + self.classname)
+        os.system("sudo hciconfig hci0 name " + self.devname)
         self.soccontrol.listen(1)
         self.sockinter.listen(1)
         print "waiting for connection"
         self.ccontrol, self.cinfo = self.soccontrol.accept()
-        print "Control channel connected to "+self.cinfo[Bluetooth.HOST]
+        print "Control channel connected to " + self.cinfo[Bluetooth.HOST]
         self.cinter, self.cinfo = self.sockinter.accept()
-        print "Interrupt channel connected to "+self.cinfo[Bluetooth.HOST]
+        print "Interrupt channel connected to " + self.cinfo[Bluetooth.HOST]
 
     def sendInput(self, inp):
         str_inp = ""
