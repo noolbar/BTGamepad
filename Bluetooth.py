@@ -1,5 +1,9 @@
-from bluetooth import BluetoothSocket, L2CAP
+from bluetooth import *
+#import os
+#import sys
+#from bluetooth import BluetoothSocket, L2CAP
 import dbus # Used to set up the SDP record
+
 class Bluetooth:
     """docstring for Gamepad"""
     HOST = 0
@@ -43,8 +47,12 @@ class Bluetooth:
 
     def listen(self):
         # self.service.handle = self.service.AddRecord(self.service_record)
-        os.system("sudo hciconfig hci0 class " + self.classname)
+        print("sudo hciconfig hci0 class 0x" + self.classname)
+        print("sudo hciconfig hci0 name " + self.devname)
+        os.system("sudo hciconfig hci0 up")
+        os.system("sudo hciconfig hci0 class 0x" + self.classname)
         os.system("sudo hciconfig hci0 name " + self.devname)
+        os.system("sudo hciconfig hci0 piscan")
         self.soccontrol.listen(1)
         self.sockinter.listen(1)
         print "waiting for connection"
