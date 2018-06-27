@@ -21,26 +21,26 @@ class Gamepad:
         self.mapping['KEY_I'] = 14
         self.mapping['KEY_O'] = 15
         self.state = [
-			0xA1,
-			0x03,
-			[
-			0,
-			0,
-			0,
-			0,
-			0,
-			0,
-			0,
-			0,
-			0,
+            0xA1,
+            0x03,
+            [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
             0,
             0,
             0,
             0,
             0,0,0
-			],
-			0x00,
-			0x00,0x00,0x00]
+            ],
+            0x00,
+            0x00,0x00,0x00]
         i = 0
         while True:
             try:
@@ -51,7 +51,7 @@ class Gamepad:
                 sys.exit("Keyboard not found")
                 break
             i += 1
-		print ("keyboard found " + str(self.dev))
+        print ("keyboard found " + str(self.dev))
 
     def change_state(self, event):
         evdev_code = ecodes.KEY[event.code]
