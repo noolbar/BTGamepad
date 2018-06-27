@@ -52,7 +52,7 @@ class Keyboard:
                 elif self.state[i] == 0x00 and event.value == 1:
                     self.state[i] = hex_key
                 break
-                
+
     def event_loop(self, bt):
         for event in self.dev.read_loop():
             if event.type == ecodes.EV_KEY and event.value < 2:
